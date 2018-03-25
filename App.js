@@ -13,17 +13,38 @@ export default class App extends React.Component {
   constructor (...params) {
     super(...params);
 
-    this.onPressSquare = this.onPressSquare.bind(this);
+    // this.onPressSquare = this.onPressSquare.bind(this);
     this.renderSquare = this.renderSquare.bind(this);
     this.onLayout = this.onLayout.bind(this);
 
     const { width, height } = Dimensions.get('window');
 
-    this.state = { width, height };
+    this.state = { width, height, data: this.props.data };
   }
 
   onPressSquare(name) {
-    Alert.alert(`Clicked ${name}!`);
+    let node = null;
+    let s1 = this.state.data.find(s => {
+      if (Array.isArray(s.children)) {
+        // assume one level of children
+        node = s.children.find(ss => ss.name === name);
+        return !!node;
+      }
+
+      return s.name === name;
+    });
+
+    if (node) {
+      s1 = node;
+    }
+
+    if (!s1) {
+      Alert.alert(`Could not find the name yo ${name}!`);
+      return;
+    }
+    s1.color = "gray";
+
+    this.setState({});
   }
 
   renderSquare(square, i) {
@@ -57,8 +78,7 @@ export default class App extends React.Component {
   }
 
   render() {
-    const { data } = this.props;
-    const { width, height } = this.state;
+    const { width, height, data } = this.state;
 
     const container = {
       x0: 0,
