@@ -15,6 +15,11 @@ export default class App extends React.Component {
 
     this.onPressSquare = this.onPressSquare.bind(this);
     this.renderSquare = this.renderSquare.bind(this);
+    this.onLayout = this.onLayout.bind(this);
+
+    const { width, height } = Dimensions.get('window');
+
+    this.state = { width, height };
   }
 
   onPressSquare(name) {
@@ -46,13 +51,27 @@ export default class App extends React.Component {
     )
   }
 
+  onLayout(e) {
+    const { width, height } = Dimensions.get('window');
+    this.setState({ width, height });
+  }
+
   render() {
-    const { data, container } = this.props;
+    const { data } = this.props;
+    const { width, height } = this.state;
+
+    const container = {
+      x0: 0,
+      y0: 0,
+      x1: width,
+      y1: height
+    }
 
     const output = squarify(data, container);
 
     return (
       <View
+        onLayout={this.onLayout}
         style={styles.container}
       >
         {output.map(this.renderSquare)}
@@ -83,13 +102,7 @@ App.defaultProps = {
     name: 'Abel', value: 4, color: 'blue',
   }, {
     name: 'Cain', value: 1, color: 'indigo',
-  }],
-  container: {
-    x0: 0,
-    y0: 0,
-    x1: Dimensions.get('window').width,
-    y1: Dimensions.get('window').height
-  }
+  }]
 }
 
 const styles = StyleSheet.create({
