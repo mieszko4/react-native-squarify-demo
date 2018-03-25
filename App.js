@@ -11,30 +11,28 @@ import squarify from 'squarify';
 
 import Treemap from "./Treemap";
 
-const store = {
-  data: [{
-    name: 'Azura', value: 6, color: 'red',
-  }, {
-    name: 'Seth', value: 5, color: '',
-    children: [
-      {
-        name: 'Noam', value: 3, color: 'orange',
-      },
-      {
-        name: 'Enos', value: 2, color: 'yellow',
-      },
-    ]
-  }, {
-    name: 'Awan', value: 5, color: '',
-    children: [{
-        name: 'Enoch', value: 5, color: 'green',
-    }]
-  }, {
-    name: 'Abel', value: 4, color: 'blue',
-  }, {
-    name: 'Cain', value: 1, color: 'indigo',
+const data = [{
+  name: 'Azura', value: 6, color: 'red',
+}, {
+  name: 'Seth', value: 5, color: '',
+  children: [
+    {
+      name: 'Noam', value: 3, color: 'orange',
+    },
+    {
+      name: 'Enos', value: 2, color: 'yellow',
+    },
+  ]
+}, {
+  name: 'Awan', value: 5, color: '',
+  children: [{
+      name: 'Enoch', value: 5, color: 'green',
   }]
-};
+}, {
+  name: 'Abel', value: 4, color: 'blue',
+}, {
+  name: 'Cain', value: 1, color: 'indigo',
+}];
 
 export default class App extends React.Component {
   constructor (...params) {
@@ -47,34 +45,36 @@ export default class App extends React.Component {
 
     this.state = {
       width, height,
-      data: store.data,
+      data: data,
       screen: "treemap"
     };
   }
 
-  onPressSquare(name) {
-    let node = null;
-    let s1 = this.state.data.find(s => {
-      if (Array.isArray(s.children)) {
-        // assume one level of children
-        node = s.children.find(ss => ss.name === name);
-        return !!node;
+  updateColor(children, name, color) {
+    return children.map(c => {
+      if (Array.isArray(c.children)) {
+        return {
+          ...c,
+          children: this.updateColor(c.children, name, color)
+        };
       }
 
-      return s.name === name;
+      if (c.name === name) {
+        return {
+          ...c,
+          color
+        }
+      }
+
+      return c;
+    })
+  }
+
+  onPressSquare(name) {
+    const data = this.updateColor(this.state.data, name, "gray");
+    this.setState({
+      data
     });
-
-    if (node) {
-      s1 = node;
-    }
-
-    if (!s1) {
-      Alert.alert(`Could not find the name yo ${name}!`);
-      return;
-    }
-    s1.color = "gray";
-
-    this.forceUpdate();
   }
 
   onLayout(e) {
