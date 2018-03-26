@@ -26,6 +26,7 @@ export default class List extends React.Component {
 
   state = {
     // TODO: move to a component
+    id: null,
     name: '',
     importance: 5,
 
@@ -41,12 +42,16 @@ export default class List extends React.Component {
   }
 
   add() {
-    this.setState({ name: '', importance: 5 });
+    this.setState({ id: null, name: '', importance: 5 });
     this.showModal();
   }
 
   edit(item) {
-    this.setState({ name: item.name, importance: item.value });
+    this.setState({
+      id: item.name, // TODO - introduce ids, do not rely on unique names
+      name: item.name,
+      importance: item.value
+    });
     this.showModal();
   }
 
@@ -59,7 +64,9 @@ export default class List extends React.Component {
   }
 
   save() {
-    console.warn('TODO - save');
+    const { id, name, importance } = this.state;
+    this.props.save(id, name, importance);
+    this.hideModal();
   }
 
   renderItem(item, i) {

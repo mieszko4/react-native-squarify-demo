@@ -33,11 +33,24 @@ const data = [
   }
 ];
 
+const getRandomArbitrary = (min, max) => {
+    return Math.random() * (max - min) + min;
+}
+
+const getRandomColor = () => {
+  const red = getRandomArbitrary(1, 255);
+  const green = getRandomArbitrary(1, 255);
+  const blue = getRandomArbitrary(1, 255);
+
+  return `rgb(${red}, ${green}, ${blue})`;
+}
+
 export default class App extends React.Component {
   constructor (...params) {
     super(...params);
 
     this.onPressSquare = this.onPressSquare.bind(this);
+    this.saveItem = this.saveItem.bind(this);
     this.onLayout = this.onLayout.bind(this);
 
     const { width, height } = Dimensions.get('window');
@@ -48,19 +61,19 @@ export default class App extends React.Component {
     };
   }
 
-  setDataProperty(children, name, property, value) {
+  setDataProperty(children, name, values) {
     return children.map(c => {
       if (Array.isArray(c.children)) {
         return {
           ...c,
-          children: this.setDataProperty(c.children, name, property, value)
+          children: this.setDataProperty(c.children, name, values)
         };
       }
 
       if (c.name === name) {
         return {
           ...c,
-          [property]: value
+          ...values
         }
       }
 
@@ -68,11 +81,26 @@ export default class App extends React.Component {
     })
   }
 
+  saveItem(id, name, importance) {
+    let data;
+    if (id) {
+      data = this.setDataProperty(this.state.data, id, { name, value: importance });
+    } else { // add new
+      data = [
+        ...this.state.data,
+        {
+          name, // TODO introduce real ids
+          value: importance,
+          color: getRandomColor()
+        }
+      ]
+    }
+    this.setState({ data });
+  }
+
   onPressSquare(name) {
-    const data = this.setDataProperty(this.state.data, name, 'done', true);
-    this.setState({
-      data
-    });
+    const data = this.setDataProperty(this.state.data, name, { done: true });
+    this.setState({ data });
   }
 
   onLayout(e) {
@@ -104,6 +132,7 @@ export default class App extends React.Component {
         </View>
         <View style={{ height }}>
           <ListScreen
+            save={this.saveItem}
             data={data}
           />
         </View>
