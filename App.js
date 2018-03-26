@@ -48,19 +48,19 @@ export default class App extends React.Component {
     };
   }
 
-  setDone(children, name) {
+  setDataProperty(children, name, property, value) {
     return children.map(c => {
       if (Array.isArray(c.children)) {
         return {
           ...c,
-          children: this.setDone(c.children, name)
+          children: this.setDataProperty(c.children, name, property, value)
         };
       }
 
       if (c.name === name) {
         return {
           ...c,
-          done: true
+          [property]: value
         }
       }
 
@@ -69,7 +69,7 @@ export default class App extends React.Component {
   }
 
   onPressSquare(name) {
-    const data = this.setDone(this.state.data, name);
+    const data = this.setDataProperty(this.state.data, name, 'done', true);
     this.setState({
       data
     });
