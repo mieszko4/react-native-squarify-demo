@@ -1,15 +1,13 @@
 import React from 'react';
 import {
   TouchableOpacity,
-  Dimensions,
   StyleSheet,
-  Alert,
   Text,
   View
 } from 'react-native';
 import squarify from 'squarify';
 
-export default class App extends React.Component {
+export default class Treemap extends React.Component {
   constructor (...params) {
     super(...params);
     this.renderSquare = this.renderSquare.bind(this);

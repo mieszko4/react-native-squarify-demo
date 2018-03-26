@@ -3,36 +3,34 @@ import {
   TouchableOpacity,
   Dimensions,
   StyleSheet,
-  Alert,
   Text,
   View
 } from 'react-native';
 import squarify from 'squarify';
 
-import Treemap from "./Treemap";
+import Treemap from './Treemap';
+import ListScreen from './ListScreen';
 
-const data = [{
-  name: 'Azura', value: 6, color: 'red',
-}, {
-  name: 'Seth', value: 5, color: '',
-  children: [
-    {
-      name: 'Noam', value: 3, color: 'orange',
-    },
-    {
-      name: 'Enos', value: 2, color: 'yellow',
-    },
-  ]
-}, {
-  name: 'Awan', value: 5, color: '',
-  children: [{
-      name: 'Enoch', value: 5, color: 'green',
-  }]
-}, {
-  name: 'Abel', value: 4, color: 'blue',
-}, {
-  name: 'Cain', value: 1, color: 'indigo',
-}];
+const data = [
+  {
+    name: 'Azura', value: 6, color: 'red'
+  },
+  {
+    name: 'Noam', value: 3, color: 'orange'
+  },
+  {
+    name: 'Enos', value: 2, color: 'yellow'
+  },
+  {
+    name: 'Enoch', value: 5, color: 'green'
+  },
+  {
+    name: 'Abel', value: 4, color: 'blue'
+  },
+  {
+    name: 'Cain', value: 1, color: 'indigo'
+  }
+];
 
 export default class App extends React.Component {
   constructor (...params) {
@@ -46,7 +44,7 @@ export default class App extends React.Component {
     this.state = {
       width, height,
       data: data,
-      screen: "treemap"
+      screen: 'treemap'
     };
   }
 
@@ -71,7 +69,7 @@ export default class App extends React.Component {
   }
 
   onPressSquare(name) {
-    const data = this.updateColor(this.state.data, name, "gray");
+    const data = this.updateColor(this.state.data, name, 'gray');
     this.setState({
       data
     });
@@ -93,7 +91,7 @@ export default class App extends React.Component {
     }
 
     let screenContent = <Text>Do not know what!</Text>;
-    if (screen === "treemap") {
+    if (screen === 'treemap') {
       screenContent = (
         <Treemap
           data={data}
@@ -101,7 +99,12 @@ export default class App extends React.Component {
           onPressSquare={this.onPressSquare}
         />
       );
-
+    } else if (screen === 'list') {
+      screenContent = (
+        <ListScreen
+          data={data}
+        />
+      );
     }
 
     return (
@@ -116,5 +119,7 @@ export default class App extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  flex: 1
+  container: {
+    flex: 1
+  }
 });
