@@ -5,6 +5,7 @@ import {
   Modal,
   StyleSheet,
   Text,
+  Slider,
   TextInput,
   ScrollView,
   View
@@ -17,13 +18,17 @@ export default class List extends React.Component {
     this.add = this.add.bind(this);
     this.edit = this.edit.bind(this);
     this.updateName = this.updateName.bind(this);
+    this.updateImportance = this.updateImportance.bind(this);
     this.save = this.save.bind(this);
 
     this.hideModal = this.hideModal.bind(this);
   }
 
   state = {
+    // TODO: move to a component
     name: '',
+    importance: 5,
+
     modalVisible: false
   }
 
@@ -36,17 +41,21 @@ export default class List extends React.Component {
   }
 
   add() {
-    this.setState({ name: '' });
+    this.setState({ name: '', importance: 5 });
     this.showModal();
   }
 
   edit(item) {
-    this.setState({ name: item.name });
+    this.setState({ name: item.name, importance: item.value });
     this.showModal();
   }
 
   updateName(name) {
     this.setState({ name });
+  }
+
+  updateImportance(importance) {
+    this.setState({ importance });
   }
 
   save() {
@@ -76,7 +85,7 @@ export default class List extends React.Component {
   }
 
   render() {
-    const { modalVisible, name } = this.state;
+    const { modalVisible, name, importance } = this.state;
     const { data } = this.props;
 
     return (
@@ -99,6 +108,14 @@ export default class List extends React.Component {
                 style={styles.textInput}
                 onChangeText={this.updateName}
                 value={name}
+              />
+              <Text style={styles.label}>Importance</Text>
+              <Slider
+                value={importance}
+                onValueChange={this.updateImportance}
+                step={1}
+                minimumValue={1}
+                maximumValue={10}
               />
             </View>
             <TouchableOpacity
