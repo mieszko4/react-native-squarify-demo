@@ -25,7 +25,7 @@ export default class Treemap extends React.Component {
             width: square.x1 - square.x0,
             top: square.y0,
             height: square.y1 - square.y0,
-            backgroundColor: square.color
+            backgroundColor: square.done ? 'gray' : square.color
           }
         ]}
       >

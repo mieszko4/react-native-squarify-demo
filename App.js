@@ -3,6 +3,7 @@ import {
   TouchableOpacity,
   Dimensions,
   StyleSheet,
+  ScrollView,
   Text,
   View
 } from 'react-native';
@@ -43,24 +44,23 @@ export default class App extends React.Component {
 
     this.state = {
       width, height,
-      data: data,
-      screen: 'treemap'
+      data: data
     };
   }
 
-  updateColor(children, name, color) {
+  setDone(children, name) {
     return children.map(c => {
       if (Array.isArray(c.children)) {
         return {
           ...c,
-          children: this.updateColor(c.children, name, color)
+          children: this.setDone(c.children, name)
         };
       }
 
       if (c.name === name) {
         return {
           ...c,
-          color
+          done: true
         }
       }
 
@@ -69,7 +69,7 @@ export default class App extends React.Component {
   }
 
   onPressSquare(name) {
-    const data = this.updateColor(this.state.data, name, 'gray');
+    const data = this.setDone(this.state.data, name);
     this.setState({
       data
     });
@@ -81,7 +81,7 @@ export default class App extends React.Component {
   }
 
   render() {
-    const { width, height, data, screen } = this.state;
+    const { width, height, data } = this.state;
 
     const container = {
       x0: 0,
@@ -90,31 +90,25 @@ export default class App extends React.Component {
       y1: height
     }
 
-    let screenContent = <Text>Do not know what!</Text>;
-    if (screen === 'treemap') {
-      screenContent = (
-        <Treemap
-          data={data}
-          container={container}
-          onPressSquare={this.onPressSquare}
-        />
-      );
-    } else if (screen === 'list') {
-      screenContent = (
-        <ListScreen
-          data={data}
-        />
-      );
-    }
-
     return (
-      <View
+      <ScrollView
         onLayout={this.onLayout}
-        style={styles.container}
+        pagingEnabled
       >
-        {screenContent}
-      </View>
-    );
+        <View style={{ height }}>
+          <Treemap
+            data={data}
+            container={container}
+            onPressSquare={this.onPressSquare}
+          />
+        </View>
+        <View style={{ height }}>
+          <ListScreen
+            data={data}
+          />
+        </View>
+      </ScrollView>
+    )
   }
 }
 

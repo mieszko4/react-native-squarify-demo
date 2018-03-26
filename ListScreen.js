@@ -19,7 +19,13 @@ export default class List extends React.Component {
         style={styles.item}
       >
         <Text
-          style={styles.itemLabel}
+          style={[
+            styles.itemLabel,
+            item.done ? {
+              color: 'gray',
+              textDecorationLine: 'line-through'
+            } : null
+          ]}
         >
           {item.name}
         </Text>
